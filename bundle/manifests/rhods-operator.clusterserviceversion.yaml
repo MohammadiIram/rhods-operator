@@ -1727,7 +1727,7 @@ spec:
                 - name: OPERATOR_NAME
                   value: rhods-operator
                 - name: RELATED_IMAGE_ODH_DASHBOARD_IMAGE
-                  value: "quay.io/redhat-user-workloads/rhoai-tenant/rhoai-operator/odh-dashboard-fork@sha256:b3aca1d3553c50cc025052036c9ebb79da74445b2e069f19450a7462d63dd1e5"
+                  value: "quay.io/redhat-user-workloads/rhoai-tenant/rhoai-operator/odh-dashboard-fork@sha256:0188ac49ecbadfd63cf09e7b6cd8193ed7dd9b648339d5ee43c3d907b324e703"
                 command:
                 - /manager
                 image: REPLACE_IMAGE:latest
