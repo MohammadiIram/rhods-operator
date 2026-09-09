@@ -19,7 +19,7 @@ on:
 
 
 env:
-  GITHUB_ORG: red-hat-data-services
+  GITHUB_ORG: rhoai-rhtap
   LOG_FILE_DIR: ${{ github.workspace }}
   LOG_FILE_NAME: operator-processor.log
 
@@ -57,8 +57,8 @@ jobs:
           fi
 
       # Compute org, branch refs, and tool paths based on event type.
-      # Push events use the original red-hat-data-services org and
-      # utils/processors path.  PR events use rhoai-rhtap org and the
+      # Compute org, branch refs, and tool paths based on event type.
+      # Both push and PR events use the rhoai-rhtap org and the
       # utils/operator-processor path found in that org's automation repo.
       - name: Configure workflow parameters
         if: steps.bot-check.outputs.skip != 'true'
@@ -77,9 +77,9 @@ jobs:
             echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
             echo "operator_ref=${{ github.ref_name }}" >> $GITHUB_OUTPUT
             echo "operator_repo=${{ env.GITHUB_ORG }}/rhods-operator" >> $GITHUB_OUTPUT
-            echo "utils_path=utils/processors" >> $GITHUB_OUTPUT
-            echo "processor_script=utils/utils/processors/operator-processor.py" >> $GITHUB_OUTPUT
-            echo "requirements=utils/utils/processors/requirements.txt" >> $GITHUB_OUTPUT
+            echo "utils_path=utils/operator-processor" >> $GITHUB_OUTPUT
+            echo "processor_script=utils/utils/operator-processor/operator-processor.py" >> $GITHUB_OUTPUT
+            echo "requirements=utils/utils/operator-processor/requirements.txt" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout RBC repo
