@@ -156,7 +156,25 @@ jobs:
           BRANCH: ${{ steps.config.outputs.branch }}
           RHOAI_QUAY_API_TOKEN: ${{ secrets.RHOAI_QUAY_API_TOKEN }}
         run: |
-          RHOAI_VERSION=v${BRANCH/rhoai-/}
+          # For rhoai-X.Y branches, derive the version directly.
+          # For non-release branches (stable, gap-poc, main, etc.) the
+          # substitution produces nonsense like "vstable", so fall back
+          # to the highest rhoai-X.Y branch found on the remote.
+          if [[ "$BRANCH" =~ ^rhoai- ]]; then
+            RHOAI_VERSION=v${BRANCH/rhoai-/}
+          else
+            DEFAULT_BRANCH=$(git ls-remote --heads origin 'refs/heads/rhoai-*' | \
+              sed 's|.*refs/heads/||' | \
+              grep -E '^rhoai-[0-9]+\.[0-9]+$' | \
+              sort -t. -k1,1n -k2,2n | tail -1)
+            if [[ -n "$DEFAULT_BRANCH" ]]; then
+              RHOAI_VERSION=v${DEFAULT_BRANCH/rhoai-/}
+              echo "Non-release branch '$BRANCH' — defaulting to latest release: $DEFAULT_BRANCH (RHOAI_VERSION=$RHOAI_VERSION)"
+            else
+              echo "::error::No rhoai-X.Y branches found. Cannot determine default RHOAI_VERSION."
+              exit 1
+            fi
+          fi
           COMPONENT_SUFFIX=${RHOAI_VERSION//./-}
           ODH_OPERATOR_COMPONENT_NAME=odh-operator-${COMPONENT_SUFFIX}
           PUSH_PIPELINE_PATH=rhods-operator/.tekton/${ODH_OPERATOR_COMPONENT_NAME}-push.yaml
